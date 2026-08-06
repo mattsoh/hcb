@@ -36,7 +36,7 @@
       <% end %>
     <% end %>
 
-    <% if @report.draft? && organizer_signed_in?(as: :member) %>
+    <% if @report.draft? && (organizer_signed_in?(as: :member) || policy(@report).destroy?) %>
       <%= pop_icon_to "delete",
                       reimbursement_report_path(@report),
                       data: { turbo_confirm: "Are you sure?", turbo_method: :delete, turbo_confirm_danger: true },
@@ -54,7 +54,7 @@
                       style: "height: 32px; width: 32px; background: #338eda20; color: #338eda",
                       'aria-label': "View the associated card grant." %>
     <% end %>
-    <% unless @report.closed? || !organizer_signed_in?(as: :member) %>
+    <% if !@report.closed? && (organizer_signed_in?(as: :member) && policy(@report).edit?) %>
       <%= pop_icon_to "settings",
                       "#",
                       data: { behavior: "modal_trigger", modal: "edit" },
